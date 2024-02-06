@@ -40,15 +40,21 @@ export const Bookings = () => {
     try {
       const response = await fetch(
         `http://localhost:8000/api/booking/${params}`,
-        { method: "DELETE" }
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (response.ok) {
+        console.log("Successfully deleted data");
         fetchBookings();
       } else {
-        console.log("Failed to delete booking");
+        console.log("Failed to delete booking", response.status);
       }
     } catch (error) {
-      console.log("An error occurred while deleting booking");
+      console.log("An error occurred while deleting booking", error);
     }
   };
 
@@ -112,14 +118,14 @@ export const Bookings = () => {
                         <MdEdit fontSize={20} />
                       </div>
                     </Link>
-                    <Link to={`view/${bookings.id}`}>
+                    <Link to={`${bookings.id}`}>
                       <div className="text-purple-500">
                         <MdRemoveRedEye fontSize={20} />
                       </div>
                     </Link>
                     <div
                       className="text-red-500 hover:cursor-pointer"
-                      onClick={handleDelete(bookings.id)}
+                      onClick={() => handleDelete(bookings.id)}
                     >
                       <MdDeleteForever fontSize={20} />
                     </div>

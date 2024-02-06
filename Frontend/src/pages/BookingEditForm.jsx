@@ -1,10 +1,39 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-export const BookingsForm = () => {
+export const BookingEditForm = () => {
   const navigate = useNavigate();
   const [availableRooms, setAvailableRooms] = useState([]);
   const [availableCustomers, setAvailableCustomers] = useState([]);
+  const params = useParams();
+
+  const [formData, setFormData] = useState({
+    id_number: "",
+    room_number: "",
+    check_in: "",
+    check_out: "",
+    payment: "",
+    status: "",
+    description: "",
+  });
+
+  const fetchBooking = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/booking/${params.id}`
+      );
+      const data = await response.json();
+      setFormData(data);
+      console.log(data);
+    } catch (error) {
+      console.log("An error occurred while fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBooking();
+  }, [params.id]);
 
   const fetchAvailableRooms = async () => {
     try {
@@ -19,6 +48,7 @@ export const BookingsForm = () => {
       );
     }
   };
+  
   useEffect(() => {
     fetchAvailableRooms();
   }, []);
@@ -37,35 +67,27 @@ export const BookingsForm = () => {
     fetchCustomers();
   }, []);
 
-  const [formData, setFormData] = useState({
-    id_number: "",
-    room_number: "",
-    check_in: "",
-    check_out: "",
-    payment: "",
-    status: "",
-    description: "",
-  });
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8000/api/booking/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
+      const response = await fetch(
+        `http://localhost:8000/api/booking/${params.id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (response.ok) {
         console.log("Successfully submitted bookings data");
         return navigate("../bookings", { replace: true });
       } else {
-        console.log("Failed to add booking", response.status);
+        console.log("Failed to update room", response.status);
       }
     } catch (error) {
-      console.log("An error occurred while submitting bookings data", error);
+      console.log("An error occurred while submitting data", error);
     }
   };
 
@@ -76,7 +98,7 @@ export const BookingsForm = () => {
   return (
     <div>
       <div>
-        <h1>Add Booking</h1>
+        <h1>Update Bookings</h1>
       </div>
       <form action="" onSubmit={handleSubmit}>
         <select
@@ -152,9 +174,7 @@ export const BookingsForm = () => {
           placeholder="Description"
         ></textarea>
 
-        <button type="submit">
-          Add Booking
-        </button>
+        <button type="submit">Update Booking</button>
       </form>
     </div>
   );

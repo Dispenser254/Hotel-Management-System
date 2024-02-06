@@ -23,10 +23,12 @@ class BookingList(APIView):
     def post(self, request):
         serializer = BookingSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            room_id = Booking.room_number.id
+            booking = serializer.save()
+            room_number = booking.room_number
             try:
-                room = Room.objects.get(id=room_id)
+                room = Room.objects.get(room_number=room_number)
+                if Booking.objects.filter(id_number=booking.id_number, room_number=room_number).exclude(id=booking.id).exists():
+                    raise Http404('User is already booked in this room.')
                 room.status = 'Booked'
                 room.save()
             except Room.DoesNotExist:
@@ -47,18 +49,26 @@ class BookingDetail(APIView):
         serializer = BookingSerializer(booking)
         return Response(serializer.data)
     
-    def put(self, request, pk):
-        booking = self.get_object(pk)
-        serializer = BookingSerializer(booking , data=request.data)
+    def put(self, request, pk=None):
+        booking_to_update = Booking.objects.get(id=pk)
+        serializer = BookingSerializer(instance=booking_to_update , data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, pk):
-         booking = self.get_object(pk)
-         booking.delete()
-         return Response(status=status.HTTP_204_NO_CONTENT)
+    def delete(self, request, pk=None):
+        booking_to_delete = Booking.objects.get(id=pk)
+        room_number = booking_to_delete.room_number
+        booking_to_delete.delete()
+        try:
+            room = Room.objects.get(room_number=room_number)
+            room.status = 'Open'
+            room.save()
+        except Room.DoesNotExist:
+            raise Http404('Room does not exist.')
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)
      
 class PaymentList(APIView):
     def get(self):

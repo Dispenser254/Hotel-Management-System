@@ -14,6 +14,11 @@ import { RoomDetail } from "./pages/RoomDetail";
 import { RoomEditForm } from "./pages/RoomEditForm";
 import { RoomForm } from "./pages/RoomForm";
 import { BookingsForm } from "./pages/BookingsForm";
+import { BookingsDetails } from "./pages/BookingsDetails";
+import { BookingEditForm } from "./pages/BookingEditForm";
+import { CustomerDetails } from "./pages/CustomerDetails";
+import { CustomerEditForm } from "./pages/CustomerEditForm";
+import { CustomerForm } from "./pages/CustomerForm";
 
 export default function App() {
   return (
@@ -21,13 +26,24 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Dashboard />} />
+          {/* Bookings path details */}
           <Route path="bookings" element={<Bookings />} />
+          <Route path="bookings/:id/" element={<BookingsDetails />} />
+          <Route path="bookings/edit/:id/" element={<BookingEditForm />} />
           <Route path="bookings/addBookings/" element={<BookingsForm />} />
+
+          {/* Room path details */}
           <Route path="rooms" element={<Rooms />} />
           <Route path="rooms/:id/" element={<RoomDetail />} />
           <Route path="rooms/edit/:id/" element={<RoomEditForm />} />
           <Route path="rooms/addRooms/" element={<RoomForm />} />
+
+          {/* Customer path details */}
           <Route path="customers" element={<Customers />} />
+          <Route path="customers/:id/" element={<CustomerDetails />} />
+          <Route path="customers/edit/:id/" element={<CustomerEditForm />} />
+          <Route path="customers/addCustomers" element={<CustomerForm />} />
+
           <Route path="payments" element={<Payments />} />
           <Route path="messages" element={<Messages />} />
           <Route path="support" element={<Support />} />

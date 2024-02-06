@@ -1,6 +1,6 @@
 import { Table } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MdAdd, MdDeleteForever, MdEdit, MdRemoveRedEye } from "react-icons/md";
 
 export const Customers = () => {
@@ -8,7 +8,6 @@ export const Customers = () => {
   const [customers, setCustomers] = useState([]);
   const [customerCount, setCustomerCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const params = useParams();
 
   const fetchCustomers = async () => {
     try {
@@ -34,22 +33,25 @@ export const Customers = () => {
     setCurrentPage(newPage);
   };
 
-  const handleDelete = async (event) => {
-    event.preventDefault();
+  const handleDelete = async (params) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/customer/${params.id}`,
+        `http://localhost:8000/api/customer/${params}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (response.ok) {
+        console.log("Successfully deleted customers data");
         fetchCustomers();
       } else {
-        console.log("Failed to delete customer");
+        console.log("Failed to delete customers", response.status);
       }
     } catch (error) {
-      console.log("An error occurred while deleting customer");
+      console.log("An error occurred while deleting customers", error);
     }
   };
   return (
@@ -60,7 +62,7 @@ export const Customers = () => {
             <h2 className="text-2xl font-bold ">Customer List</h2>
             <p>You have {customerCount} customers.</p>
           </div>
-          <Link to="addCustomer/">
+          <Link to="addCustomers/">
             <div className="mr-8 mt-5 flex items-center flex-col hover:bg-slate-400 p-4 rounded-lg bg-gray-300">
               <span className="text-sm p-2">Add Customers</span>
               <MdAdd
@@ -102,14 +104,14 @@ export const Customers = () => {
                         <MdEdit fontSize={20} />
                       </div>
                     </Link>
-                    <Link to={`view/${customers.id}`}>
+                    <Link to={`${customers.id}`}>
                       <div className="text-purple-500">
                         <MdRemoveRedEye fontSize={20} />
                       </div>
                     </Link>
                     <td
                       className="text-red-500 hover:cursor-pointer"
-                      onClick={handleDelete(customers.id)}
+                      onClick={() => handleDelete(customers.id)}
                     >
                       <MdDeleteForever fontSize={20} />
                     </td>

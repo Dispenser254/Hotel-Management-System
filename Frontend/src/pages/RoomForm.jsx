@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Label, TextInput } from "flowbite-react";
 
 export const RoomForm = () => {
   const navigate = useNavigate();
@@ -38,69 +39,84 @@ export const RoomForm = () => {
     setFormData({ ...formData, [name]: value });
   };
   return (
-    <div>
-      <div>
-        <h1>Add Room</h1>
+    <div className="flex flex-col px-4 py-2 overscroll-auto">
+      <div className="scroll-container overflow-auto h-screen pb-8">
+        <div>
+          <h1>Add Room</h1>
+        </div>
+        <form action="" onSubmit={handleSubmit} className="flex">
+          <div>
+            <div className="mb-2 block">
+              <Label htmlFor="roomNo" value="Room Number" />
+              <TextInput
+                id="roomNo"
+                name="room_number"
+                value={formData.room_number}
+                placeholder="Room Number"
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+          </div>
+
+          <input
+            type="text"
+            placeholder="Room Number"
+            name="room_number"
+            value={formData.room_number}
+            onChange={handleInputChange}
+          />
+
+          <select
+            name="room_type"
+            value={formData.room_type}
+            onChange={handleInputChange}
+          >
+            <option value="">Select Room Type</option>
+            <option value="Deluxe">Deluxe</option>
+            <option value="Super Deluxe">Super Deluxe</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Bed Capacity"
+            name="bed_capacity"
+            value={formData.bed_capacity}
+            onChange={handleInputChange}
+          />
+
+          <select
+            name="air_condition"
+            value={formData.air_condition}
+            onChange={handleInputChange}
+          >
+            <option value="">Select Air Condition</option>
+            <option value="AC">AC</option>
+            <option value="No AC Deluxe">No AC</option>
+          </select>
+
+          <input
+            type="text"
+            placeholder="Rent"
+            name="rent"
+            value={formData.rent}
+            onChange={handleInputChange}
+          />
+
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            cols="10"
+            rows="10"
+            placeholder="Description"
+          ></textarea>
+
+          <button type="submit">Add Room</button>
+        </form>
       </div>
-      <form action="" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Room Number"
-          name="room_number"
-          value={formData.room_number}
-          onChange={handleInputChange}
-        />
-
-        <select
-          name="room_type"
-          value={formData.room_type}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Room Type</option>
-          <option value="Deluxe">Deluxe</option>
-          <option value="Super Deluxe">Super Deluxe</option>
-          <option value="Single">Single</option>
-          <option value="Double">Double</option>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Bed Capacity"
-          name="bed_capacity"
-          value={formData.bed_capacity}
-          onChange={handleInputChange}
-        />
-
-        <select
-          name="air_condition"
-          value={formData.air_condition}
-          onChange={handleInputChange}
-        >
-          <option value="">Select Air Condition</option>
-          <option value="AC">AC</option>
-          <option value="No AC Deluxe">No AC</option>
-        </select>
-
-        <input
-          type="text"
-          placeholder="Rent"
-          name="rent"
-          value={formData.rent}
-          onChange={handleInputChange}
-        />
-
-        <textarea
-          name="description"
-          value={formData.description}
-          onChange={handleInputChange}
-          cols="10"
-          rows="10"
-          placeholder="Description"
-        ></textarea>
-
-        <button type="submit">Add Room</button>
-      </form>
     </div>
-  
   );
 };

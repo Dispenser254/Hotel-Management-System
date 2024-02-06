@@ -37,15 +37,15 @@ class CustomerDetail(APIView):
         serializer = CustomerSerializer(customer)
         return Response(serializer.data)
     
-    def put(self, request, pk):
-        customer = self.get_object(pk)
-        serializer = CustomerSerializer(customer , data=request.data)
+    def put(self, request, pk=None):
+        customer_to_update = Customer.objects.get(id=pk)
+        serializer = CustomerSerializer(instance=customer_to_update , data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def delete(self, pk):
-         customer = self.get_object(pk)
-         customer.delete()
+    def delete(self, pk=None):
+         customer_to_delete = Customer.objects.get(id=pk)
+         customer_to_delete.delete()
          return Response(status=status.HTTP_204_NO_CONTENT)
